@@ -1,0 +1,226 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0998224C-F45E-4EBF-A944-7FFBCB2DB134}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Axantum.AxCrypt</RootNamespace>
+    <AssemblyName>Axantum.AxCrypt</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>AxCrypt.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>AxantumStrongName.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>True</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS</DefineConstants>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>true</CodeAnalysisFailOnMissingRules>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>False</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>True</Optimize>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>true</CodeAnalysisFailOnMissingRules>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\SolutionItems\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="BouncyCastle.Crypto">
+      <HintPath>..\SolutionItems\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AboutBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutBox.Designer.cs">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AxCryptMainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AxCryptMainForm.Designer.cs">
+      <DependentUpon>AxCryptMainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ConfirmWipeDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfirmWipeDialog.Designer.cs">
+      <DependentUpon>ConfirmWipeDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DebugOptionsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DebugOptionsDialog.Designer.cs">
+      <DependentUpon>DebugOptionsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EncryptPassphraseDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EncryptPassphraseDialog.Designer.cs">
+      <DependentUpon>EncryptPassphraseDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DecryptPassphraseDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DecryptPassphraseDialog.Designer.cs">
+      <DependentUpon>DecryptPassphraseDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BackgroundMonitor.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Extensions.cs" />
+    <Compile Include="PersistentState.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ProgressBackgroundWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <EmbeddedResource Include="ConfirmWipeDialog.resx">
+      <DependentUpon>ConfirmWipeDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConfirmWipeDialog.sv.resx">
+      <DependentUpon>ConfirmWipeDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.sv.resx">
+      <DependentUpon>Resources.resx</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Include="Properties\AssemblyInfo.template" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="AboutBox.resx">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AboutBox.sv.resx">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AxCryptMainForm.resx">
+      <DependentUpon>AxCryptMainForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AxCryptMainForm.sv.resx">
+      <DependentUpon>AxCryptMainForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DebugOptionsDialog.resx">
+      <DependentUpon>DebugOptionsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DebugOptionsDialog.sv.resx">
+      <DependentUpon>DebugOptionsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DecryptPassphraseDialog.sv.resx">
+      <DependentUpon>DecryptPassphraseDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EncryptPassphraseDialog.resx">
+      <DependentUpon>EncryptPassphraseDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DecryptPassphraseDialog.resx">
+      <DependentUpon>DecryptPassphraseDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EncryptPassphraseDialog.sv.resx">
+      <DependentUpon>EncryptPassphraseDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="app.config" />
+    <None Include="AxantumStrongName.pfx" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Axantum.AxCrypt.Core\Axantum.AxCrypt.Core.csproj">
+      <Project>{966E9510-1A1D-46C7-97B5-460A0FF9B89F}</Project>
+      <Name>Axantum.AxCrypt.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Axantum.AxCrypt.Mono\Axantum.AxCrypt.Mono.csproj">
+      <Project>{CE9E8614-8DC5-4757-9384-3C416AB61A47}</Project>
+      <Name>Axantum.AxCrypt.Mono</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="AboutThisProgram.txt" />
+    <Content Include="Axantum.AxCrypt_ml.xml" />
+    <Content Include="AxCrypt.ico" />
+    <Content Include="resources\activefilegreen16.png" />
+    <Content Include="resources\activefileknownkeygreen16.png" />
+    <Content Include="resources\axcrypticon.ico" />
+    <Content Include="resources\closeremovestandbygreen32.png" />
+    <Content Include="resources\closeremovestandbyred32.png" />
+    <None Include="resources\trashred16.png" />
+    <None Include="resources\encryptlock32.png" />
+    <None Include="resources\opendocument32.png" />
+    <None Include="resources\decryptlockopen32.png" />
+    <Content Include="resources\decryptedfilered16.png" />
+    <Content Include="resources\decryptedunknownkeyfilered16.png" />
+    <Content Include="resources\exclamationgreen16.png" />
+    <None Include="resources\exclamationgreen32.png" />
+    <Content Include="resources\fileknownkeygreen16.png" />
+    <Content Include="resources\helpquestiongreen32.png" />
+    <None Include="resources\encryptionkeygreen32.png" />
+    <None Include="resources\encryptionkeyred32.png" />
+    <Content Include="resources\inactivefilegreen16.png" />
+    <Content Include="resources\refreshred.png" />
+    <Content Include="resources\axcrypticon128.png" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="resources\refreshgreen.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\SolutionItems\Axantum.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  -->
+  <!--<TargetName="BeforeBuild">
+  </TargetName>-->
+  <!--<Target Name="AfterBuild">
+  </Target>-->
+</Project>

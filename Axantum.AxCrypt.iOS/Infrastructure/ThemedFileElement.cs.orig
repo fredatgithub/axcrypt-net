@@ -1,0 +1,87 @@
+using System;
+using MonoTouch.Dialog;
+using System.IO;
+using System.Text;
+using MonoTouch.UIKit;
+using MonoTouch.Foundation;
+
+namespace Axantum.AxCrypt.iOS.Infrastructure
+{
+	public class ThemedFileElement : StyledStringElement
+	{
+		const string cellKey = "ThemedFileElement";
+		public int PathId {
+			get;
+			private set;
+		}
+
+		public ThemedFileElement (string fileName, DateTime lastAccessTime, int pathId) : base(
+			caption: Path.GetFileNameWithoutExtension(fileName),
+			value: String.Concat("Last opened ", FormatDateTime(lastAccessTime)),
+			style: UITableViewCellStyle.Subtitle)
+		{
+			PathId = pathId;
+		}
+
+		static string FormatDateTime(DateTime value) {
+			DateTime now = DateTime.Now;
+			string nowDateString = now.ToShortDateString ();
+			string yesterdayString = now.AddDays (-1).ToShortDateString ();
+			string valueDateString = value.ToShortDateString ();
+			StringBuilder format = new StringBuilder ();
+
+			if (nowDateString == valueDateString) {
+				format.Append ("today at");
+			} else if (yesterdayString == valueDateString) {
+				format.Append ("yesterday at");
+			} else {
+				format.Append (nowDateString);
+			}
+
+			format.Append (" ").Append (now.ToShortTimeString());
+			return format.ToString ();
+		}
+
+		public override UITableViewCell GetCell (UITableView tv)
+		{
+			var cell = tv.DequeueReusableCell (cellKey);
+			if (cell == null){
+				cell = new UITableViewCell (UITableViewCellStyle.Value2, cellKey);
+				cell.SelectionStyle = UITableViewCellSelectionStyle.None;
+			}
+
+			cell.Accessory = Accessory;
+			cell.BackgroundColor = UIColor.White; // Appearance.BackgroundColorDisabled;
+			cell.SelectionStyle = UITableViewCellSelectionStyle.None;
+
+			var tl = cell.TextLabel;
+			tl.Text = Caption;
+			tl.TextAlignment = Alignment;
+			tl.TextColor = TextColor == null ? UIColor.Black : TextColor;
+			tl.BackgroundColor = UIColor.Clear;
+			tl.Font = UIFont.SystemFontOfSize (12); // = Font == null ? Appearance.LabelFont : Font;
+			tl.LineBreakMode = LineBreakMode;
+			tl.Lines = 0;			
+			// The check is needed because the cell might have been recycled.
+			if (cell.DetailTextLabel != null)
+				cell.DetailTextLabel.Text = Value == null ? "" : Value;
+
+
+			//var cell = base.GetCell (tv);
+			Theme.Configure (cell);
+			return cell;
+		}
+
+		protected override NSString CellKey {
+			get {
+				return new NSString(base.CellKey.ToString() + GetType().Name);
+			}
+		}
+
+		protected override string GetKey (int style)
+		{
+			return base.GetKey (style) + GetType().Name;
+		}
+	}
+}
+

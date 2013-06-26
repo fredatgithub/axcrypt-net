@@ -1,0 +1,193 @@
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using MonoTouch.CoreAnimation;
+using MonoTouch.Dialog;
+using MonoTouch.Foundation;
+using MonoTouch.ObjCRuntime;
+using MonoTouch.UIKit;
+using MonoTouch.MessageUI;
+
+namespace Axantum.AxCrypt.iOS
+{
+	public partial class AppViewController : DialogViewController
+	{
+		public static UIColor HighlightColor = UIColor.FromRGB(96, 170, 13);
+		public const float CornerRadius = 20f;
+		public const float BorderWith = 2.75f;
+		public const float VerticalPadding = 15f;
+
+		private const string HeaderImagePath = "Images/logo.png";
+		private UIImage headerImage;
+		private Section fileSection;
+
+		PassphraseViewController passphrase;
+		FilePresenter filePresenter;
+
+		static bool UserInterfaceIdiomIsPhone {
+			get { return UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone; }
+		}
+
+		public AppViewController (IntPtr handle) : base (handle)
+		{
+			Initialize();
+		}
+		
+		public AppViewController () : base(UITableViewStyle.Grouped, null)
+		{
+			Initialize();
+		}
+
+		void Initialize ()
+		{
+			BeginInvokeOnMainThread(delegate {
+				using(headerImage = UIImage.FromFile(HeaderImagePath)) {
+					CreateFileListing();
+					ConfigureTableView();
+					//fConfigureViewLayer();
+					//CreateHeader("AxCrypt");
+					//ReloadFileSystem();
+				}
+			});
+		}
+
+		protected void CreateHeader (string title)
+		{
+			const float horizontalPadding = 15f;
+			const float verticalPadding = 10f;
+			const float verticalMargin = 20f;
+			const float horizontalMargin = 25f;
+			
+			View.AddSubview (new UIImageView (headerImage) {
+				Frame = new RectangleF (horizontalPadding, verticalPadding, View.Bounds.Width - horizontalPadding * 2, headerImage.Size.Height + verticalMargin),
+				ContentMode = UIViewContentMode.TopLeft
+			});
+			View.AddSubview (new UILabel {
+				Frame = new RectangleF (headerImage.Size.Width + horizontalMargin, verticalPadding, View.Bounds.Width - (headerImage.Size.Width + horizontalPadding + horizontalMargin), headerImage.Size.Height),
+				Font = UIFont.SystemFontOfSize (36),
+				Text = title,
+				TextColor = UIColor.DarkTextColor,
+				ShadowColor = HighlightColor,
+				ShadowOffset = new SizeF (1, 1),
+				BackgroundColor = UIColor.Clear
+			});
+		}
+
+		void ConfigureTableView ()
+		{
+			TableView.Bounces = false;
+			TableView.ScrollEnabled = false;
+			TableView.TableHeaderView = new UIView(new RectangleF(0, 0, View.Bounds.Width, 10)) { BackgroundColor = UIColor.Clear };
+			//TableView.Source = new EditableTableViewSource(this);
+		}
+
+		void ConfigureViewLayer ()
+		{
+			View.Layer.CornerRadius = CornerRadius;
+			View.Layer.BorderColor = HighlightColor.CGColor;
+			View.Layer.BorderWidth = BorderWith;
+		}
+
+		void CreateFileListing() {
+			Section introduction = new Section () {
+				new StringElement("About AxCrypt for iOS", (NSAction) delegate {
+					new UIAlertView(
+						"Opening encrypted files",
+						"By installing this app, you have given your other apps super powers! In your mail app, for example, you can now simply tap on .axx documents to open them with AxCrypt!",
+						null, null, "OK").Show();
+				}),
+				new StyledStringElement("Troubleshooting") { Accessory = UITableViewCellAccessory.DisclosureIndicator },
+				new StyledStringElement("Feedback", (NSAction) delegate {
+					if(!MFMailComposeViewController.CanSendMail) {
+						new UIAlertView("Missing e-mail account", "I'm sorry, but you'll need to set up an e-mail account on this phone to be able to send feedback", null, null, "OK").Show ();
+						return;
+					}
+					MFMailComposeViewController mail = new MFMailComposeViewController();
+					mail.SetSubject("Feedback");
+					mail.SetToRecipients(new[]{ "sami.lamti@tretton37.com" });
+					mail.SetMessageBody("<br/> System info: AxCrypt for iOS v1.01", true);
+					mail.Finished += delegate {
+						mail.DismissViewControllerAsync(true);
+					};
+					PresentViewControllerAsync(mail, true);
+				}) { Accessory = UITableViewCellAccessory.DisclosureIndicator }
+			};
+
+			fileSection = new Section(String.Empty, "Local files can be transferred from iTunes") {
+				new StyledStringElement("Local files", (NSAction)delegate {
+					FileListingViewController listing = new FileListingViewController("Local files", "Images/App Icons");
+					listing.TableView.TableHeaderView = TableView.TableHeaderView;
+					NavigationController.PushViewController(listing, true);
+				}) { Accessory = UITableViewCellAccessory.DisclosureIndicator }
+
+				#region Example data (be sure to comment out the call to ReloadFileSystem below)
+				// iPhone examples
+				//					new StyledStringElement("Medical records", "December 1st, 2012 12:03pm", UITableViewCellStyle.Subtitle),
+				//					new StyledStringElement("Income tax returns", "November 5th, 2012 9:29am", UITableViewCellStyle.Subtitle),
+				//					new StyledStringElement("Real estate contract", "November 3rd, 2012 3:30pm", UITableViewCellStyle.Subtitle),
+				
+				// iPad examples
+				//					new StyledStringElement("Medical records", "December 1st, 2012 12:03pm", UITableViewCellStyle.Value1),
+				//					new StyledStringElement("Income tax and National Insurance returns", "November 5th, 2012 9:29am", UITableViewCellStyle.Value1),
+				//					new StyledStringElement("Real estate contract", "November 3rd, 2012 3:30pm", UITableViewCellStyle.Value1),
+				#endregion
+			};
+			Root = new RootElement("AxCrypt") {
+				new Section { new StyledStringElement("Recent files") { Accessory = UITableViewCellAccessory.DisclosureIndicator } },
+				fileSection,
+				introduction,
+			};
+		}
+
+		void FadeViewController (UIViewController controller)
+		{
+			UIView.Animate (.5d, delegate {
+				controller.View.Layer.Opacity = 0f;
+			}, delegate {
+				controller.RemoveFromParentViewController();
+				controller.View.RemoveFromSuperview();
+				controller.Dispose();
+			});
+
+		}
+
+		public void OpenFile(string targetPath)
+		{
+			TableView.UserInteractionEnabled = false;
+
+			passphrase = new PassphraseViewController(targetPath);
+			filePresenter = new FilePresenter(this);
+
+			passphrase.FileDecrypted += decryptedFilePath => {
+				filePresenter.ReadyToPresent += delegate {
+					FadeViewController(passphrase);
+					TableView.UserInteractionEnabled = true;
+				};
+				filePresenter.Done += delegate {
+					filePresenter.Dispose();
+				};
+
+				filePresenter.Present(decryptedFilePath);
+			};
+			passphrase.Cancelled += delegate {
+				FadeViewController (passphrase);
+				TableView.UserInteractionEnabled = true;
+			};
+
+			AddChildViewController(passphrase);
+			Add (passphrase.View);
+		}
+
+		public override void ViewWillAppear (bool animated)
+		{
+			base.ViewWillAppear (animated);
+		}
+
+		public override bool ShouldAutorotateToInterfaceOrientation (UIInterfaceOrientation toInterfaceOrientation)
+		{
+			return (toInterfaceOrientation == UIInterfaceOrientation.Portrait || toInterfaceOrientation == UIInterfaceOrientation.PortraitUpsideDown);
+		}
+	}
+}
